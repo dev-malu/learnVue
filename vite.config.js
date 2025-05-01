@@ -3,12 +3,35 @@ import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueDevTools from "vite-plugin-vue-devtools";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), vueDevTools()],
+  plugins: [
+    vue(),
+    vueDevTools(),
+    tailwindcss({
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Poppins", "sans-serif"],
+          },
+          gridTemplateColumns: {
+            "70/30": "70% 28%",
+          },
+        },
+      },
+    }),
+  ],
   server: {
     port: 3000,
+    proxy: {
+      "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
   },
   resolve: {
     alias: {
